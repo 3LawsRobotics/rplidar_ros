@@ -47,6 +47,7 @@
 
 #define ROS2VERSION "1.0.1"
 
+
 using namespace rp::standalone::rplidar;
 
 bool need_exit = false;
@@ -64,15 +65,15 @@ class RPLidarScanPublisher : public rclcpp::Node
   private:    
     void init_param()
     {
-        this->declare_parameter("channel_type");
-        this->declare_parameter("tcp_ip");
-        this->declare_parameter("tcp_port");
-        this->declare_parameter("serial_port");
-        this->declare_parameter("serial_baudrate");
-        this->declare_parameter("frame_id");
-        this->declare_parameter("inverted");
-        this->declare_parameter("angle_compensate");
-        this->declare_parameter("scan_mode");
+        this->declare_parameter("channel_type",std::string("serial"));
+        this->declare_parameter("tcp_ip", std::string("192.168.0.7"));
+        this->declare_parameter("tcp_port", int(20108));
+        this->declare_parameter("serial_port", std::string("/dev/ttyUSB0"));
+        this->declare_parameter("serial_baudrate", int(1000000));
+        this->declare_parameter("frame_id", std::string("laser_frame"));
+        this->declare_parameter("inverted", bool(false));
+        this->declare_parameter("angle_compensate", bool(false));
+        this->declare_parameter("scan_mode", std::string());
 
         this->get_parameter_or<std::string>("channel_type", channel_type, "serial");
         this->get_parameter_or<std::string>("tcp_ip", tcp_ip, "192.168.0.7"); 
@@ -242,8 +243,8 @@ public:
     {
         
         init_param();
-        RCLCPP_INFO(this->get_logger(),"RPLIDAR running on ROS2 package rplidar_ros2. ROS2 SDK Version:" ROS2VERSION ", RPLIDAR SDK Version:" RPLIDAR_SDK_VERSION "");
-
+        RCLCPP_INFO(this->get_logger(),"RPLIDAR running on ROS2 package rplidar_ros2. ROS2 SDK Version: %s"  
+        ", RPLIDAR SDK Version:%s",ROS2VERSION,SLAMTEC_LIDAR_SDK_VERSION);
         u_result     op_result;
 
         // create the driver instance
